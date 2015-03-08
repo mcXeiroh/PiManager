@@ -1,0 +1,27 @@
+﻿<Window x:Class="PiManager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PiManager"
+        mc:Ignorable="d"
+        Title="PiManager" Height="350" Width="525" ResizeMode="NoResize" Topmost="True">
+    <Grid>
+        <GroupBox x:Name="groupBox" Header="Connected Pi's" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="302" Width="266">
+            <StackPanel>
+                <ListView x:Name="PiListView" HorizontalAlignment="Stretch" Height="169" Margin="5,5,5,5" VerticalAlignment="Top" Width="244">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Width="100" Header="IP-address" DisplayMemberBinding="{Binding IPaddress}"/>
+                            <GridViewColumn Width="80" Header="Status" DisplayMemberBinding="{Binding Status}"/>
+                            <GridViewColumn Width="50" Header="Ping" DisplayMemberBinding="{Binding Ping}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <TextBox x:Name="newIP_TB" Height="23" TextWrapping="Wrap" Text="Enter a new IP address, e.g. '127.0.0.1'" HorizontalAlignment="Stretch" Margin="5,5,5,5"/>
+                <Button HorizontalAlignment="Stretch" Margin="5,5,5,5" Content="Add Pi" Click="AddPi_Click" />
+                <Button HorizontalAlignment="Stretch" Margin="5,5,5,5" Content="Ping" Click="Ping_Click" />
+            </StackPanel>
+        </GroupBox>
+    </Grid>
+</Window>
