@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -25,6 +26,7 @@ namespace PiManager
         public MainWindow()
         {
             InitializeComponent();
+            statusEllipse.Fill = Brushes.Red;
         }
 
         private void AddPi_Click(object sender, RoutedEventArgs e)
@@ -38,6 +40,19 @@ namespace PiManager
             PiList.ip.Add(PiList.ID, newIP_TB.Text);
             PiList.status.Add(PiList.ID, PiData.connectionStatus.offline);
             PiList.ID++;
+            
+        }
+
+        public void UpdateView(int itemID, PiData.connectionStatus newStatus) //TODO Doesn't work!
+        {
+            int viewID = itemID - 1;
+            PiListView.Items.RemoveAt(viewID);
+            PiListView.Items.Insert(viewID, new PiData
+            {
+                IPaddress = PiList.ip[itemID],
+                Status = newStatus.ToString(),
+                Ping = "-- ms"
+            });
         }
 
         public void PingAll()
@@ -68,8 +83,12 @@ namespace PiManager
                                         Status = PiData.connectionStatus.online.ToString(),
                                         Ping = pingReply.RoundtripTime + " ms"
                                     });
-                                    PiList.status.Add(i, PiData.connectionStatus.online);
+
+                                    if (!PiList.status.ContainsKey(i)) PiList.status.Add(i, PiData.connectionStatus.online);
+                                    else PiList.status[i] = PiData.connectionStatus.online;
+
                                     break;
+
                                 case IPStatus.TimedOut:
                                     PiListView.Items.RemoveAt(i - 1);
                                     PiListView.Items.Insert(i - 1, new PiData
@@ -78,7 +97,12 @@ namespace PiManager
                                         Status = PiData.connectionStatus.timeOut.ToString(),
                                         Ping = "-- ms"
                                     });
+
+                                    if (!PiList.status.ContainsKey(i)) PiList.status.Add(i, PiData.connectionStatus.timeOut);
+                                    else PiList.status[i] = PiData.connectionStatus.timeOut;
+
                                     break;
+
                                 default:
                                     PiListView.Items.RemoveAt(i - 1);
                                     PiListView.Items.Insert(i - 1, new PiData
@@ -87,6 +111,10 @@ namespace PiManager
                                         Status = PiData.connectionStatus.notFound.ToString(),
                                         Ping = "-- ms"
                                     });
+
+                                    if (!PiList.status.ContainsKey(i)) PiList.status.Add(i, PiData.connectionStatus.notFound);
+                                    else PiList.status[i] = PiData.connectionStatus.notFound;
+
                                     break;
                             }
                         }
@@ -106,7 +134,7 @@ namespace PiManager
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("unhandled error");
+                    MessageBox.Show(ex.ToString());
                 }
             }
         }
@@ -115,12 +143,51 @@ namespace PiManager
         {
             PingAll();
         }
+
+        private void Connect_Click(object sender, RoutedEventArgs e)
+        {
+            if (PiList.ID > 1)
+            {
+                statusEllipse.Fill = Brushes.Orange;
+                addPi_btn.IsEnabled = false;
+                connect_btn.IsEnabled = false;
+
+                ConnectionHandler.ConnectAll();
+            }
+        }
+
+        private void ClearList_Click(object sender, RoutedEventArgs e)
+        {
+            if (!connect_btn.IsEnabled)
+            {
+                foreach (var item in PiList.clientThread)
+                {
+                    item.Value.Abort();
+                }
+                foreach (var item in PiList.tcpClient)
+                {
+                    item.Value.Close();
+                }
+
+                statusEllipse.Fill = Brushes.Red;
+                addPi_btn.IsEnabled = true;
+                connect_btn.IsEnabled = true;
+            }
+
+            PiList.ID = 1;
+            PiList.ip.Clear();
+            PiList.status.Clear();
+            PiList.tcpClient.Clear();
+            PiList.clientThread.Clear();
+
+            PiListView.Items.Clear();
+        }
     }
 
 
     public class PiData
     {
-        public enum connectionStatus { offline, timeOut, notFound, online, connected };
+        public enum connectionStatus { offline, timeOut, notFound, online, connected, error };
 
         public string IPaddress { get; set; }
         public string Status { get; set; }
@@ -136,5 +203,6 @@ namespace PiManager
         public static Dictionary<int, string> ip = new Dictionary<int, string>();
         public static Dictionary<int, PiData.connectionStatus> status = new Dictionary<int, PiData.connectionStatus>();
         public static Dictionary<int, TcpClient> tcpClient = new Dictionary<int, TcpClient>();
+        public static Dictionary<int, Thread> clientThread = new Dictionary<int, Thread>();
     }
 }
