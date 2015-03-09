@@ -30,6 +30,7 @@ namespace PiManager
         public static Thread StartThread(int i)
         {
             var thread = new Thread(() => Connect(i));
+            thread.IsBackground = true;
             thread.Start();
             return thread;
         }
@@ -43,14 +44,14 @@ namespace PiManager
                 PiList.tcpClient.Add(ID, new TcpClient()); //Create new TcpClient
                 PiList.tcpClient[ID].Connect(ipString, Port); //Connect to listener
 
-                NetworkStream stream = PiList.tcpClient[ID].GetStream();
+                PiList.stream.Add(ID, PiList.tcpClient[ID].GetStream());
 
-                //SendMessage(stream, ID.ToString());
+                SendMessage(PiList.stream[ID], ID.ToString());
 
-                string received = ReadMessage(stream);
+                string received = ReadMessage(PiList.stream[ID]);
 
                 
-                if (received != "valid")
+                if (received == "valid")
                 {
                     PiList.status[ID] = PiData.connectionStatus.connected;
                     main.UpdateView();
@@ -60,6 +61,8 @@ namespace PiManager
                     PiList.status[ID] = PiData.connectionStatus.error;
                     main.UpdateView();
                 }
+
+                WaitForMessage(PiList.stream[ID]);
             }
             catch (Exception ex)
             {
@@ -67,47 +70,54 @@ namespace PiManager
                 main.UpdateView();
                 MessageBox.Show(ex.ToString());
             }
+
         }
 
         public static void SendMessage(NetworkStream stream, string msg)
         {
-            UTF8Encoding utEn = new UTF8Encoding();
-            byte[] buffer = utEn.GetBytes(msg);
+            try {
+                UTF8Encoding utEn = new UTF8Encoding();
+                byte[] buffer = utEn.GetBytes(msg);
 
-            stream.Write(buffer, 0, buffer.Length);
+                stream.Write(buffer, 0, buffer.Length);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
 
         public static string ReadMessage(NetworkStream stream)
         {
-            StreamReader reader = new StreamReader(stream);
-            string msg = reader.ReadLineSingleBreak();
-            return msg;
+            try {
+                StreamReader reader = new StreamReader(stream);
+                string msg = reader.ReadLineSingleBreak();
+                return msg;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return null;
+            }
         }
 
-        public static async Task ReadStream(NetworkStream stream)
+        public static void WaitForMessage(NetworkStream stream)
         {
             while (true)
             {
-                UTF8Encoding utEn = new UTF8Encoding();
-
-                byte[] readBuffer = new byte[BuffSize];
-                int k = await stream.ReadAsync(readBuffer, 0, BuffSize);
-
-                string received = utEn.GetString(readBuffer, 0, k);
-
-                Model.ChangeInput(StringInterpreter.ReadMessage(received));
-
-                byte[] buffer = utEn.GetBytes("valid");
-
-                stream.Write(buffer, 0, buffer.Length);
+                Model.ChangeInput(StringInterpreter.ReadMessage(ReadMessage(stream)));
             }
         }
 
         public static void BroadcastPin(Pin pin)
         {
-            //Send to all Pi's the new PinState
+            foreach (var item in PiList.stream)
+            {
+                SendMessage(item.Value, StringInterpreter.BuildMessage(pin));
+            }
         }
     }
+
     public static class StreamReaderExtensions
     {
         public static string ReadLineSingleBreak(this StreamReader reader)

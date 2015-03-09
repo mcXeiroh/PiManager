@@ -8,7 +8,7 @@ namespace PiManager
 {
     class StringInterpreter
     {
-        public string BuildMessage(Pin pin)
+        public static string BuildMessage(Pin pin)
         {
             return pin.IO + " " + pin.No + " " + pin.State + "\n";
         }
@@ -35,12 +35,5 @@ namespace PiManager
         }
     }
 
-    public class Pin
-    {
-        public enum GPIO { i, o };
-
-        public GPIO IO { get; set; }
-        public int No { get; set; } //Number
-        public bool State { get; set; }
-    }
+    
 }

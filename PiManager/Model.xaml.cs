@@ -25,28 +25,28 @@ namespace PiManager
         static bool[] outputState = new bool[8];
 
         static Thread modelThread = new Thread(new ThreadStart(StartProgram));
+        static Model model = new Model();
 
         public Model()
         {
             InitializeComponent();
+            model = this;
         }
 
         public static void StartProgram()
         {
-            for (int i = 0; i < 10; i++)
+            for (int j = 1; j <= 8; j++)
             {
-                for (int j = 1; j <= 8; j++)
-                {
-                    SetDigitalChannel(j);
-                    Thread.Sleep(500);
-                    ClearDigitalChannel(j);
-                }
-                for (int j = 8; j >= 1; j--)
-                {
-                    SetDigitalChannel(j);
-                    Thread.Sleep(500);
-                    SetDigitalChannel(j);
-                }
+                SetDigitalChannel(j);
+                Thread.Sleep(500);
+                ClearDigitalChannel(j);
+            }
+
+            for (int j = 8; j >= 1; j--)
+            {
+                SetDigitalChannel(j);
+                Thread.Sleep(500);
+                ClearDigitalChannel(j);
             }
         }
 
@@ -104,62 +104,62 @@ namespace PiManager
             switch (pin.No)
             {
                 case 1:
-                    model.input1.IsChecked = pin.State;
+                    model.input1.Dispatcher.Invoke((Action)(() => model.input1.IsChecked = pin.State));
                     break;
                 case 2:
-                    model.input2.IsChecked = pin.State;
+                    model.input2.Dispatcher.Invoke((Action)(() => model.input2.IsChecked = pin.State));
                     break;
                 case 3:
-                    model.input3.IsChecked = pin.State;
+                    model.input3.Dispatcher.Invoke((Action)(() => model.input3.IsChecked = pin.State));
                     break;
                 case 4:
-                    model.input4.IsChecked = pin.State;
+                    model.input4.Dispatcher.Invoke((Action)(() => model.input4.IsChecked = pin.State));
                     break;
                 case 5:
-                    model.input5.IsChecked = pin.State;
+                    model.input5.Dispatcher.Invoke((Action)(() => model.input5.IsChecked = pin.State));
                     break;
                 case 6:
-                    model.input6.IsChecked = pin.State;
+                    model.input6.Dispatcher.Invoke((Action)(() => model.input6.IsChecked = pin.State));
                     break;
                 case 7:
-                    model.input7.IsChecked = pin.State;
+                    model.input7.Dispatcher.Invoke((Action)(() => model.input7.IsChecked = pin.State));
                     break;
                 case 8:
-                    model.input8.IsChecked = pin.State;
+                    model.input8.Dispatcher.Invoke((Action)(() => model.input8.IsChecked = pin.State));
                     break;
             }
+            model.input1.Refresh();
         }
 
         public static void ChangeOutput(Pin pin)
         {
             outputState[pin.No - 1] = pin.State;
-            Model model = new Model();
-
+            
             switch (pin.No)
             {
                 case 1:
-                    model.outputRadio1.Dispatcher.BeginInvoke((Action)(() => model.outputRadio1.IsChecked = pin.State));
+                    model.outputRadio1.Dispatcher.Invoke((Action)(() => model.outputRadio1.IsChecked = pin.State));
                     break;
                 case 2:
-                    model.outputRadio2.Dispatcher.BeginInvoke((Action)(() => model.outputRadio2.IsChecked = pin.State));
+                    model.outputRadio2.Dispatcher.Invoke((Action)(() => model.outputRadio2.IsChecked = pin.State));
                     break;
                 case 3:
-                    model.outputRadio3.Dispatcher.BeginInvoke((Action)(() => model.outputRadio3.IsChecked = pin.State));
+                    model.outputRadio3.Dispatcher.Invoke((Action)(() => model.outputRadio3.IsChecked = pin.State));
                     break;
                 case 4:
-                    model.outputRadio4.Dispatcher.BeginInvoke((Action)(() => model.outputRadio4.IsChecked = pin.State));
+                    model.outputRadio4.Dispatcher.Invoke((Action)(() => model.outputRadio4.IsChecked = pin.State));
                     break;
                 case 5:
-                    model.outputRadio5.Dispatcher.BeginInvoke((Action)(() => model.outputRadio5.IsChecked = pin.State));
+                    model.outputRadio5.Dispatcher.Invoke((Action)(() => model.outputRadio5.IsChecked = pin.State));
                     break;
                 case 6:
-                    model.outputRadio6.Dispatcher.BeginInvoke((Action)(() => model.outputRadio6.IsChecked = pin.State));
+                    model.outputRadio6.Dispatcher.Invoke((Action)(() => model.outputRadio6.IsChecked = pin.State));
                     break;
                 case 7:
-                    model.outputRadio7.Dispatcher.BeginInvoke((Action)(() => model.outputRadio7.IsChecked = pin.State));
+                    model.outputRadio7.Dispatcher.Invoke((Action)(() => model.outputRadio7.IsChecked = pin.State));
                     break;
                 case 8:
-                    model.outputRadio8.Dispatcher.BeginInvoke((Action)(() => model.outputRadio8.IsChecked = pin.State));
+                    model.outputRadio8.Dispatcher.Invoke((Action)(() => model.outputRadio8.IsChecked = pin.State));
                     break;
             }
             model.outputRadio1.Refresh();
@@ -169,6 +169,7 @@ namespace PiManager
         private void button_Click(object sender, RoutedEventArgs e)
         {
             modelThread.SetApartmentState(ApartmentState.STA);
+            modelThread.IsBackground = true;
             modelThread.Start();
             button.IsEnabled = false;
         }

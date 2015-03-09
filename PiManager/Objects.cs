@@ -33,4 +33,13 @@ namespace PiManager
         public static Dictionary<int, Thread> clientThread = new Dictionary<int, Thread>();
         public static Dictionary<int, NetworkStream> stream = new Dictionary<int, NetworkStream>();
     }
+
+    public class Pin
+    {
+        public enum GPIO { i, o };
+
+        public GPIO IO { get; set; }
+        public int No { get; set; } //Number
+        public bool State { get; set; }
+    }
 }

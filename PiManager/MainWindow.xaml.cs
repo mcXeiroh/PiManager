@@ -157,6 +157,7 @@ namespace PiManager
                 connect_btn.IsEnabled = false;
 
                 ConnectionHandler.ConnectAll();
+                statusEllipse.Fill = Brushes.Lime;
             }
         }
 
@@ -202,6 +203,7 @@ namespace PiManager
                     item.Value.Close();
                 }
             }
+            Environment.Exit(0);
         }
 
         private void StartPrg_Click(object sender, RoutedEventArgs e)
