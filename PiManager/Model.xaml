@@ -21,14 +21,14 @@
         </GroupBox>
         <GroupBox Header="Outputs" HorizontalAlignment="Stretch" Margin="10,65,10,0" VerticalAlignment="Top" Height="53" >
             <WrapPanel>
-                <RadioButton x:Name="outputRadio1" Content="1" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" IsEnabled="False"/>
-                <RadioButton x:Name="outputRadio2" Content="2" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" IsEnabled="False"/>
-                <RadioButton x:Name="outputRadio3" Content="3" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" IsEnabled="False"/>
-                <RadioButton x:Name="outputRadio4" Content="4" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" IsEnabled="False"/>
-                <RadioButton x:Name="outputRadio5" Content="5" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" IsEnabled="False"/>
-                <RadioButton x:Name="outputRadio6" Content="6" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" IsEnabled="False"/>
-                <RadioButton x:Name="outputRadio7" Content="7" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" IsEnabled="False"/>
-                <RadioButton x:Name="outputRadio8" Content="8" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" IsEnabled="False"/>
+                <RadioButton x:Name="outputRadio1" Content="1" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
+                <RadioButton x:Name="outputRadio2" Content="2" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
+                <RadioButton x:Name="outputRadio3" Content="3" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
+                <RadioButton x:Name="outputRadio4" Content="4" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
+                <RadioButton x:Name="outputRadio5" Content="5" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
+                <RadioButton x:Name="outputRadio6" Content="6" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
+                <RadioButton x:Name="outputRadio7" Content="7" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
+                <RadioButton x:Name="outputRadio8" Content="8" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
             </WrapPanel>
         </GroupBox>
         <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="117,161,0,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>

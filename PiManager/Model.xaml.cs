@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Threading;
+using System.Windows.Threading;
 
 namespace PiManager
 {
@@ -36,15 +37,15 @@ namespace PiManager
             {
                 for (int j = 1; j <= 8; j++)
                 {
-                    ClearAllDigital();
                     SetDigitalChannel(j);
                     Thread.Sleep(500);
+                    ClearDigitalChannel(j);
                 }
                 for (int j = 8; j >= 1; j--)
                 {
-                    ClearAllDigital();
                     SetDigitalChannel(j);
                     Thread.Sleep(500);
+                    SetDigitalChannel(j);
                 }
             }
         }
@@ -84,9 +85,9 @@ namespace PiManager
 
         private void Input_Click(object sender, RoutedEventArgs e)
         {
-            CheckBox input = (CheckBox) e.Source;
+            CheckBox input = (CheckBox)e.Source;
             string name = input.Content.ToString();
-            
+
             ChangeInput(new Pin
             {
                 IO = Pin.GPIO.i,
@@ -133,7 +134,7 @@ namespace PiManager
         {
             outputState[pin.No - 1] = pin.State;
             Model model = new Model();
-            
+
             switch (pin.No)
             {
                 case 1:
@@ -158,18 +159,27 @@ namespace PiManager
                     model.outputRadio7.Dispatcher.BeginInvoke((Action)(() => model.outputRadio7.IsChecked = pin.State));
                     break;
                 case 8:
-                    model.outputRadio8.Dispatcher.BeginInvoke((Action) (() => model.outputRadio8.IsChecked = pin.State));
+                    model.outputRadio8.Dispatcher.BeginInvoke((Action)(() => model.outputRadio8.IsChecked = pin.State));
                     break;
             }
-
+            model.outputRadio1.Refresh();
             ConnectionHandler.BroadcastPin(pin);
         }
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
-            
             modelThread.SetApartmentState(ApartmentState.STA);
             modelThread.Start();
+            button.IsEnabled = false;
+        }
+    }
+    public static class ExtensionMethods
+    {
+        private static Action EmptyDelegate = delegate () { };
+
+        public static void Refresh(this UIElement uiElement)
+        {
+            uiElement.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
         }
     }
 }
