@@ -26,6 +26,7 @@ namespace PiManager
         public MainWindow()
         {
             InitializeComponent();
+            AppDomain.CurrentDomain.ProcessExit += new EventHandler(CloseApp);
             statusEllipse.Fill = Brushes.Red;
         }
 
@@ -43,16 +44,19 @@ namespace PiManager
             
         }
 
-        public void UpdateView(int itemID, PiData.connectionStatus newStatus) //TODO Doesn't work!
+        public void UpdateView() //TODO Doesn't work!
         {
-            int viewID = itemID - 1;
-            PiListView.Items.RemoveAt(viewID);
-            PiListView.Items.Insert(viewID, new PiData
+            /*
+            foreach (var item in PiList.status)
             {
-                IPaddress = PiList.ip[itemID],
-                Status = newStatus.ToString(),
-                Ping = "-- ms"
-            });
+                PiListView.Items.RemoveAt(item.Key - 1);
+                PiListView.Items.Insert(item.Key - 1, new PiData
+                {
+                    IPaddress = PiList.ip[item.Key],
+                    Status = item.Value.ToString(),
+                    Ping = "-- ms"
+                });
+            } */
         }
 
         public void PingAll()
@@ -182,27 +186,28 @@ namespace PiManager
 
             PiListView.Items.Clear();
         }
-    }
 
+        public static void CloseApp(object sender, EventArgs e)
+        {
+            MessageBox.Show("Fire");
+            MainWindow main = new MainWindow();
+            if (!main.connect_btn.IsEnabled)
+            {
+                foreach (var item in PiList.clientThread)
+                {
+                    item.Value.Abort();
+                }
+                foreach (var item in PiList.tcpClient)
+                {
+                    item.Value.Close();
+                }
+            }
+        }
 
-    public class PiData
-    {
-        public enum connectionStatus { offline, timeOut, notFound, online, connected, error };
-
-        public string IPaddress { get; set; }
-        public string Status { get; set; }
-        public string Ping { get; set; }
-    }
-
-    /// <summary>
-    /// This class is to manage all entered and connected pi's.
-    /// </summary>
-    public class PiList
-    {
-        public static int ID = 1;
-        public static Dictionary<int, string> ip = new Dictionary<int, string>();
-        public static Dictionary<int, PiData.connectionStatus> status = new Dictionary<int, PiData.connectionStatus>();
-        public static Dictionary<int, TcpClient> tcpClient = new Dictionary<int, TcpClient>();
-        public static Dictionary<int, Thread> clientThread = new Dictionary<int, Thread>();
+        private void StartPrg_Click(object sender, RoutedEventArgs e)
+        {
+            Model modelForm = new Model();
+            modelForm.Show();
+        }
     }
 }

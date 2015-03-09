@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ namespace PiManager
         public const int Port = 11000;
         public const int BuffSize = 100;
         public static MainWindow main = new MainWindow();
+        public static Model model = new Model();
 
         public static void ConnectAll()
         {
@@ -43,31 +45,84 @@ namespace PiManager
 
                 NetworkStream stream = PiList.tcpClient[ID].GetStream();
 
-                UTF8Encoding utEn = new UTF8Encoding();
-                byte[] buffer = utEn.GetBytes(ID.ToString());
+                //SendMessage(stream, ID.ToString());
 
-                stream.Write(buffer, 0, buffer.Length);
-
-                byte[] readBuffer = new byte[BuffSize];
-                int k = stream.Read(readBuffer, 0, BuffSize);
-
-                string received = utEn.GetString(readBuffer, 0, k);
+                string received = ReadMessage(stream);
 
                 
                 if (received != "valid")
                 {
-                    main.UpdateView(ID, PiData.connectionStatus.error);
+                    PiList.status[ID] = PiData.connectionStatus.connected;
+                    main.UpdateView();
                 } 
                 else
                 {
-                    main.UpdateView(ID, PiData.connectionStatus.connected);
+                    PiList.status[ID] = PiData.connectionStatus.error;
+                    main.UpdateView();
                 }
             }
             catch (Exception ex)
             {
+                PiList.status[ID] = PiData.connectionStatus.error;
+                main.UpdateView();
                 MessageBox.Show(ex.ToString());
-                main.UpdateView(ID, PiData.connectionStatus.error);
             }
+        }
+
+        public static void SendMessage(NetworkStream stream, string msg)
+        {
+            UTF8Encoding utEn = new UTF8Encoding();
+            byte[] buffer = utEn.GetBytes(msg);
+
+            stream.Write(buffer, 0, buffer.Length);
+        }
+
+        public static string ReadMessage(NetworkStream stream)
+        {
+            StreamReader reader = new StreamReader(stream);
+            string msg = reader.ReadLineSingleBreak();
+            return msg;
+        }
+
+        public static async Task ReadStream(NetworkStream stream)
+        {
+            while (true)
+            {
+                UTF8Encoding utEn = new UTF8Encoding();
+
+                byte[] readBuffer = new byte[BuffSize];
+                int k = await stream.ReadAsync(readBuffer, 0, BuffSize);
+
+                string received = utEn.GetString(readBuffer, 0, k);
+
+                Model.ChangeInput(StringInterpreter.ReadMessage(received));
+
+                byte[] buffer = utEn.GetBytes("valid");
+
+                stream.Write(buffer, 0, buffer.Length);
+            }
+        }
+
+        public static void BroadcastPin(Pin pin)
+        {
+            //Send to all Pi's the new PinState
+        }
+    }
+    public static class StreamReaderExtensions
+    {
+        public static string ReadLineSingleBreak(this StreamReader reader)
+        {
+            StringBuilder currentLine = new StringBuilder();
+            int i;
+            char c;
+            while ((i = reader.Read()) >= 0)
+            {
+                c = (char) i;
+                if (c == '\r' || c == '\n') break;
+                currentLine.Append(c);
+            }
+            
+            return currentLine.ToString();
         }
     }
 }
