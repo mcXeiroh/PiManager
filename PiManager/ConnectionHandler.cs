@@ -13,20 +13,28 @@ namespace PiManager
 {
     class ConnectionHandler
     {
-        public const int Port = 11000;
-        public const int BuffSize = 100;
+        public const int Port = 11000; /**< Port to connect to the Pi's */
+        public const int BuffSize = 100; /**< Socket buffer size */
         public static MainWindow main = new MainWindow();
         public static Model model = new Model();
 
+        /**
+         * Connect all Pi's which were added into the PiListView
+         */
         public static void ConnectAll()
         {
-            
             for (int i = 1; i < PiList.ID; i++)
             {
                 PiList.clientThread.Add(i, StartThread(i));
             }
         }
 
+        /**
+         * Start method for every connection thread
+         * 
+         * @param Start connection with the Pi's ID
+         * @return Thread which has been started
+         */
         public static Thread StartThread(int i)
         {
             var thread = new Thread(() => Connect(i));
@@ -35,6 +43,11 @@ namespace PiManager
             return thread;
         }
         
+        /**
+         * Main connection method
+         * 
+         * @param Pi's ID
+         */
         public static void Connect(int ID)
         {
             try
@@ -73,6 +86,12 @@ namespace PiManager
 
         }
 
+        /**
+         * Send a message to the NetworkStream of a special Pi
+         * 
+         * @param NetworkStream to send a message
+         * @param Message to send
+         */
         public static void SendMessage(NetworkStream stream, string msg)
         {
             try {
@@ -87,6 +106,12 @@ namespace PiManager
             }
         }
 
+        /**
+         * Read a Message from a special Pi
+         * 
+         * @param NetworkStream to receive a message
+         * @return Received message
+         */
         public static string ReadMessage(NetworkStream stream)
         {
             try {
@@ -101,6 +126,11 @@ namespace PiManager
             }
         }
 
+        /**
+         * Update an input with the message of a network stream
+         * 
+         * @param NetworkStream to receive input updates
+         */
         public static void WaitForMessage(NetworkStream stream)
         {
             while (true)
@@ -109,6 +139,11 @@ namespace PiManager
             }
         }
 
+        /**
+         * Sends to all Pi's an output update
+         * 
+         * @param Pin which has to be updated
+         */
         public static void BroadcastPin(Pin pin)
         {
             foreach (var item in PiList.stream)

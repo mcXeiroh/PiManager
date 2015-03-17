@@ -12,6 +12,7 @@ namespace PiManager
     {
     }
 
+    /*! Object class for handling the pi status*/
     public class PiData
     {
         public enum connectionStatus { offline, timeOut, notFound, online, connected, error };
@@ -21,9 +22,7 @@ namespace PiManager
         public string Ping { get; set; }
     }
 
-    /// <summary>
-    /// This class is to manage all entered and connected pi's.
-    /// </summary>
+    /*! Central class to store all information about all pi's */
     public class PiList
     {
         public static int ID = 1;
@@ -34,6 +33,7 @@ namespace PiManager
         public static Dictionary<int, NetworkStream> stream = new Dictionary<int, NetworkStream>();
     }
 
+    /*! Object class for handling pin's */
     public class Pin
     {
         public enum GPIO { i, o };

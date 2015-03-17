@@ -18,6 +18,7 @@ using System.Threading;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Diagnostics;
 
 namespace PiManager
 {
@@ -27,9 +28,30 @@ namespace PiManager
         {
             InitializeComponent();
             AppDomain.CurrentDomain.ProcessExit += new EventHandler(CloseApp);
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             statusEllipse.Fill = Brushes.Red;
         }
 
+        static void CurrentDomain_UnhandledException (object sender, UnhandledExceptionEventArgs e)
+        {
+            try
+            {
+                Exception ex = (Exception)e.ExceptionObject;
+
+                MessageBox.Show("Whoops! An error occurred: " + ex.Message, "Whoops! An error occurred!", MessageBoxButton.OK);
+            }
+            finally
+            {
+                CloseApp(null, EventArgs.Empty);
+            }
+        }
+
+        /**
+         * Adds a pi with the ip from the textbox to all variables
+         * 
+         * @param sender
+         * @param EventArgs
+         */
         private void AddPi_Click(object sender, RoutedEventArgs e)
         {
             PiListView.Items.Add(new PiData {
@@ -44,7 +66,10 @@ namespace PiManager
             
         }
 
-        public void UpdateView() //TODO Doesn't work!
+        /**
+         * Not used method. Actually it should show in the list view the state of the connection to a pi, e.g. connected.
+         */
+        public void UpdateView()
         {
             /*
             foreach (var item in PiList.status)
@@ -59,6 +84,9 @@ namespace PiManager
             } */
         }
 
+        /**
+         * Pings all pi's which are in the listview and updates their ping in the list.
+         */
         public void PingAll()
         {
             for (int i = 1; i < PiList.ID; i++)
@@ -143,11 +171,23 @@ namespace PiManager
             }
         }
 
+        /**
+         * Handles the ping button
+         * 
+         * @param sender
+         * @param EventArgs
+         */
         private void Ping_Click(object sender, RoutedEventArgs e)
         {
             PingAll();
         }
 
+        /**
+         * Handles the connect button. Calls the ConnectionHandler, ConnectAll.
+         * 
+         * @param sender
+         * @param EventArgs
+         */
         private void Connect_Click(object sender, RoutedEventArgs e)
         {
             if (PiList.ID > 1)
@@ -161,6 +201,12 @@ namespace PiManager
             }
         }
 
+        /**
+         * Handles the clearList button. Remove all entries out of the list view.
+         * 
+         * @param sender
+         * @param EventArgs
+         */
         private void ClearList_Click(object sender, RoutedEventArgs e)
         {
             if (!connect_btn.IsEnabled)
@@ -188,28 +234,28 @@ namespace PiManager
             PiListView.Items.Clear();
         }
 
+        /**
+         * AppDomain Event. Calls, when the application closes.
+         * 
+         * @param sender
+         * @param EventArgs
+         */
         public static void CloseApp(object sender, EventArgs e)
         {
-            MessageBox.Show("Fire");
-            MainWindow main = new MainWindow();
-            if (!main.connect_btn.IsEnabled)
-            {
-                foreach (var item in PiList.clientThread)
-                {
-                    item.Value.Abort();
-                }
-                foreach (var item in PiList.tcpClient)
-                {
-                    item.Value.Close();
-                }
-            }
-            Environment.Exit(0);
+            Process mainProcess = Process.GetCurrentProcess();
+            mainProcess.Kill();
         }
 
+        /**
+         * Opens the model view. Shows it in a dialog to avoid bugs.
+         * 
+         * @param sender
+         * @param EventArgs
+         */
         private void StartPrg_Click(object sender, RoutedEventArgs e)
         {
             Model modelForm = new Model();
-            modelForm.Show();
+            modelForm.ShowDialog();
         }
     }
 }

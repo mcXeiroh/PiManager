@@ -13,12 +13,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Threading;
 using System.Windows.Threading;
+using System.Diagnostics;
 
 namespace PiManager
 {
-    /// <summary>
-    /// Interaktionslogik für Model.xaml
-    /// </summary>
     public partial class Model : Window
     {
         static bool[] inputState = new bool[8];
@@ -33,6 +31,24 @@ namespace PiManager
             model = this;
         }
 
+        /**
+         * Method is used to close all threads and the mainprocces to avoid exceptions
+         * 
+         * @param Sender
+         * @param EventArgs
+         */
+        public static void CloseApp(Object sender, EventArgs e)
+        {
+            modelThread.Abort();
+            model.Close();
+
+            Process modelProcess = Process.GetCurrentProcess();
+            modelProcess.Kill();
+        }
+
+        /**
+         * This is the 'main method'. Mostly like the K8055-syntax.
+         */
         public static void StartProgram()
         {
             for (int j = 1; j <= 8; j++)
@@ -50,11 +66,20 @@ namespace PiManager
             }
         }
 
+        /**
+         * Reads a digital input. Known from the K8055.
+         * 
+         * @param channel number
+         * @return Returns channel state
+         */
         public static bool ReadDigitalChannel(int channel)
         {
             return inputState[channel - 1];
         }
 
+        /**
+         * Clears all outputs. Known from the K8055.
+         */
         public static void ClearAllDigital()
         {
             for (int i = 1; i <= 8; i++)
@@ -63,6 +88,11 @@ namespace PiManager
             }
         }
 
+        /**
+         * Clears a special output. Known from the K8055.
+         * 
+         * @param channel number
+         */
         public static void ClearDigitalChannel(int channel)
         {
             Pin channelPin = new Pin();
@@ -73,6 +103,11 @@ namespace PiManager
             ChangeOutput(channelPin);
         }
 
+        /**
+         * Sets the state of a special output
+         * 
+         * @param channel number
+         */
         public static void SetDigitalChannel(int channel)
         {
             Pin channelPin = new Pin();
@@ -83,6 +118,12 @@ namespace PiManager
             ChangeOutput(channelPin);
         }
 
+        /**
+         * When an input button in the user interface is pressed, this method runs.
+         * 
+         * @param sender
+         * @param EventArgs
+         */
         private void Input_Click(object sender, RoutedEventArgs e)
         {
             CheckBox input = (CheckBox)e.Source;
@@ -96,6 +137,11 @@ namespace PiManager
             });
         }
 
+        /**
+         * Changes the input state, when a message from the stream has been read.
+         * 
+         * @param Pin to update
+         */
         public static void ChangeInput(Pin pin)
         {
             inputState[pin.No - 1] = pin.State;
@@ -131,6 +177,11 @@ namespace PiManager
             model.input1.Refresh();
         }
 
+        /**
+         * Changes the output state in the user interface and broadcast it to the network streams
+         * 
+         * @param Pin to update
+         */
         public static void ChangeOutput(Pin pin)
         {
             outputState[pin.No - 1] = pin.State;
@@ -166,12 +217,40 @@ namespace PiManager
             ConnectionHandler.BroadcastPin(pin);
         }
 
+        /**
+         * Start the model method. Threaded. 
+         * 
+         * @param sender
+         * @param EventArgs
+         */
         private void button_Click(object sender, RoutedEventArgs e)
         {
             modelThread.SetApartmentState(ApartmentState.STA);
             modelThread.IsBackground = true;
             modelThread.Start();
             button.IsEnabled = false;
+        }
+
+        /**
+         * Handles the close button
+         * 
+         * @param sender
+         * @param EventArgs
+         */
+        private void closeBTN_Click(object sender, RoutedEventArgs e)
+        {
+            CloseApp(null, EventArgs.Empty);
+        }
+
+        /**
+         * Handles drag-drop. Gray bar on the top of the window.
+         * 
+         * @param sender
+         * @param EventArgs
+         */
+        private void Rectangle_DragOver(object sender, MouseButtonEventArgs e)
+        {
+            DragMove();
         }
     }
     public static class ExtensionMethods

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PiManager"
         mc:Ignorable="d"
-        Title="PiManager" Height="384" Width="569" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" Topmost="True">
+        Title="PiManager" Height="384" Width="569" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
     <Grid Margin="0,0,4,0">
         <GroupBox x:Name="groupBox" Header="Connected Pi's" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="336" Width="266">
             <StackPanel>

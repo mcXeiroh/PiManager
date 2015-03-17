@@ -5,33 +5,110 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PiManager"
         mc:Ignorable="d"
-        Title="GUI-Model" Height="300" Width="321.816" ResizeMode="CanMinimize">
+        Title="GUI-Model" Height="300" Width="321.816" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" WindowStyle="None">
     <Grid>
-        <GroupBox Header="Inputs" HorizontalAlignment="Stretch" Margin="10,10,10,0" VerticalAlignment="Top">
-            <WrapPanel>
-                <CheckBox x:Name="input1" Content="1" Margin="5,5,5,0" Click="Input_Click"/>
-                <CheckBox x:Name="input2" Content="2" Margin="5,5,5,0"/>
-                <CheckBox x:Name="input3" Content="3" Margin="5,5,5,0"/>
-                <CheckBox x:Name="input4" Content="4" Margin="5,5,5,0"/>
-                <CheckBox x:Name="input5" Content="5" Margin="5,5,5,0"/>
-                <CheckBox x:Name="input6" Content="6" Margin="5,5,5,0"/>
-                <CheckBox x:Name="input7" Content="7" Margin="5,5,5,0"/>
-                <CheckBox x:Name="input8" Content="8" Margin="5,5,5,0"/>
-            </WrapPanel>
-        </GroupBox>
-        <GroupBox Header="Outputs" HorizontalAlignment="Stretch" Margin="10,65,10,0" VerticalAlignment="Top" Height="53" >
-            <WrapPanel>
-                <RadioButton x:Name="outputRadio1" Content="1" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
-                <RadioButton x:Name="outputRadio2" Content="2" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
-                <RadioButton x:Name="outputRadio3" Content="3" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
-                <RadioButton x:Name="outputRadio4" Content="4" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
-                <RadioButton x:Name="outputRadio5" Content="5" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
-                <RadioButton x:Name="outputRadio6" Content="6" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
-                <RadioButton x:Name="outputRadio7" Content="7" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
-                <RadioButton x:Name="outputRadio8" Content="8" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
-            </WrapPanel>
-        </GroupBox>
-        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="117,161,0,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>
+        <StackPanel>
+            <Rectangle Height="20" Fill="Gray" Cursor="Hand" MouseLeftButtonDown="Rectangle_DragOver"/>
+            <GroupBox Header="Inputs" HorizontalAlignment="Stretch" Margin="10,10,10,0" VerticalAlignment="Top">
+                <WrapPanel>
+                    <CheckBox x:Name="input1" Content="1" Margin="5,5,5,0" Click="Input_Click"/>
+                    <CheckBox x:Name="input2" Content="2" Margin="5,5,5,0"/>
+                    <CheckBox x:Name="input3" Content="3" Margin="5,5,5,0"/>
+                    <CheckBox x:Name="input4" Content="4" Margin="5,5,5,0"/>
+                    <CheckBox x:Name="input5" Content="5" Margin="5,5,5,0"/>
+                    <CheckBox x:Name="input6" Content="6" Margin="5,5,5,0"/>
+                    <CheckBox x:Name="input7" Content="7" Margin="5,5,5,0"/>
+                    <CheckBox x:Name="input8" Content="8" Margin="5,5,5,0"/>
+                </WrapPanel>
+            </GroupBox>
+            <GroupBox Header="Outputs" HorizontalAlignment="Stretch" Margin="10,10,10,0" VerticalAlignment="Top" Height="53" IsEnabled="False">
+                <WrapPanel>
+                    <RadioButton x:Name="outputRadio1" Content="1" HorizontalAlignment="Left" Margin="8,5,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
+                        <RadioButton.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
+                                <SkewTransform/>
+                                <RotateTransform/>
+                                <TranslateTransform X="1.5" Y="1.5"/>
+                            </TransformGroup>
+                        </RadioButton.RenderTransform>
 
+                    </RadioButton>
+                    <RadioButton x:Name="outputRadio2" Content="2" HorizontalAlignment="Left" Margin="14,5,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
+                        <RadioButton.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
+                                <SkewTransform/>
+                                <RotateTransform/>
+                                <TranslateTransform X="1.5" Y="1.5"/>
+                            </TransformGroup>
+                        </RadioButton.RenderTransform>
+                    </RadioButton>
+                    <RadioButton x:Name="outputRadio3" Content="3" HorizontalAlignment="Left" Margin="14,5,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
+                        <RadioButton.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
+                                <SkewTransform/>
+                                <RotateTransform/>
+                                <TranslateTransform X="1.5" Y="1.5"/>
+                            </TransformGroup>
+                        </RadioButton.RenderTransform>
+                    </RadioButton>
+                    <RadioButton x:Name="outputRadio4" Content="4" HorizontalAlignment="Left" Margin="14,5,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
+                        <RadioButton.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
+                                <SkewTransform/>
+                                <RotateTransform/>
+                                <TranslateTransform X="1.5" Y="1.5"/>
+                            </TransformGroup>
+                        </RadioButton.RenderTransform>
+                    </RadioButton>
+                    <RadioButton x:Name="outputRadio5" Content="5" HorizontalAlignment="Left" Margin="14,5,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
+                        <RadioButton.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
+                                <SkewTransform/>
+                                <RotateTransform/>
+                                <TranslateTransform X="1.5" Y="1.5"/>
+                            </TransformGroup>
+                        </RadioButton.RenderTransform>
+                    </RadioButton>
+                    <RadioButton x:Name="outputRadio6" Content="6" HorizontalAlignment="Left" Margin="14,5,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
+                        <RadioButton.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
+                                <SkewTransform/>
+                                <RotateTransform/>
+                                <TranslateTransform X="1.5" Y="1.5"/>
+                            </TransformGroup>
+                        </RadioButton.RenderTransform>
+                    </RadioButton>
+                    <RadioButton x:Name="outputRadio7" Content="7" HorizontalAlignment="Left" Margin="14,5,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
+                        <RadioButton.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
+                                <SkewTransform/>
+                                <RotateTransform/>
+                                <TranslateTransform X="1.5" Y="1.5"/>
+                            </TransformGroup>
+                        </RadioButton.RenderTransform>
+                    </RadioButton>
+                    <RadioButton x:Name="outputRadio8" Content="8" HorizontalAlignment="Left" Margin="14,5,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
+                        <RadioButton.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
+                                <SkewTransform/>
+                                <RotateTransform/>
+                                <TranslateTransform X="1.5" Y="1.5"/>
+                            </TransformGroup>
+                        </RadioButton.RenderTransform>
+                    </RadioButton>
+                </WrapPanel>
+            </GroupBox>
+            <Button x:Name="button" Content="Start" HorizontalAlignment="Center" Margin="0,40,0,0" VerticalAlignment="Top" Width="120" FontSize="22" Click="button_Click"/>
+            <Button x:Name="closeBTN" Content="Close" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top" Width="120" FontSize="22" Click="closeBTN_Click"/>
+
+        </StackPanel>
     </Grid>
 </Window>

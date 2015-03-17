@@ -8,11 +8,23 @@ namespace PiManager
 {
     class StringInterpreter
     {
+        /**
+         * Builds a message which can be send to the networkstream
+         * 
+         * @param Create the message out of the pin.
+         * @return Builded message
+         */
         public static string BuildMessage(Pin pin)
         {
             return pin.IO + " " + pin.No + " " + pin.State + "\n";
         }
 
+        /**
+         * Converts a message to a pin
+         * 
+         * @param Message to convert
+         * @return Converted pin
+         */
         public static Pin ReadMessage(string msg)
         {
             Pin readPin = new Pin();
